@@ -184,6 +184,23 @@ describe('schema', function(){
             });
           });
         });
+
+        it('does not allow for empty strings as null (gh-3132)', function (done) {
+          var HappyBirthday = new Schema({
+            date: { type: Date }
+          });
+
+          var BdayModel = mongoose.model('schema-validation-date-'+random(), HappyBirthday);
+
+          var bday = new BdayModel({
+            date: ''
+          });
+
+          bday.validate(function (err) {
+            assert.ok(err);
+            done();
+          });
+        });
       });
 
       it('number min and max', function(done){
@@ -339,23 +356,6 @@ describe('schema', function(){
         });
 
         done();
-      });
-
-      it('date not empty string (gh-3132)', function (done) {
-        var HappyBirthday = new Schema({
-          date: { type: Date, required: true }
-        });
-
-        var BdayModel = mongoose.model('schema-validation-date-'+random(), HappyBirthday);
-
-        var bday = new BdayModel({
-            date: ''
-        });
-
-        bday.validate(function (err) {
-          assert.ok(err instanceof ValidatorError);
-          done();
-        });
       });
 
       it('objectid required', function(done){
